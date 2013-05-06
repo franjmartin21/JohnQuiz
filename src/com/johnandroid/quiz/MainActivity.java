@@ -4,6 +4,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
+/**
+ * No se lo que cambiar, de momento cambiaré el comentario,
+ * pero la siguiente ya subiré algo interesante,
+ * quiero probar a publicar...
+ * @author Univan
+ *
+ */
 public class MainActivity extends Activity {
 
 	@Override
