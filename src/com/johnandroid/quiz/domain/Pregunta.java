@@ -1,5 +1,6 @@
 package com.johnandroid.quiz.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -12,8 +13,11 @@ import java.util.List;
 public class Pregunta {
 	private int id;
 	private String textoPregunta;
-	private List<Respuesta> respuestas;
+	private List<Respuesta> respuestas = new ArrayList<Respuesta>();
 	
+	public void addRespuesta(Respuesta respuesta){
+		respuestas.add(respuesta);
+	}
 	
 	public int getId() {
 		return id;
