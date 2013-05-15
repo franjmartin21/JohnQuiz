@@ -17,6 +17,7 @@ public class JohnDB {
 	private final Context context;
 	private final JohnDBhelper dbHelper;
 	
+	// String con la query que se va a lanzar para devolver todas las preguntas de la base de datos
 	private static final String SELECT_ALL = 
 			"SELECT P.ID PID, P.TEXTOPREGUNTA TEXTOPREGUNTA, R.ID RID, R.TEXTORESPUESTA TEXTORESPUESTA, R.CORRECTAYN CORRECTAYN" +
 			" FROM PREGUNTAS P, RESPUESTAS R" +
@@ -42,27 +43,30 @@ public class JohnDB {
 		}
 	}
 	
-	public Cursor getPreguntas(){
-		Cursor c = db.query(Constants.TABLE_PREGUNTAS, null, null, null, null, null, null);
-		return c;
-	}
-	
-	public List <Pregunta> getPreguntas(int numPreguntas){
+	/**
+	 * Ejecuta query para obtener todas las preguntas de la base de datos y mapea el resultado
+	 * en un Array de objetos Pregunta
+	 * @return List <Pregunta>
+	 */
+	public List <Pregunta> getPreguntas(){
 		List <Pregunta> preguntas= null;
 		Cursor c = null;
 		try{
-		c = db.rawQuery(SELECT_ALL, null);
-		preguntas = getObjectsFromCursor(c);
-		/*for(int i=0; i<numPreguntas;i++){
-			c.move(getRandomNumber());
-			
-		}*/
+			c = db.rawQuery(SELECT_ALL, null);
+			preguntas = getObjectsFromCursor(c);
 		} finally{
 			c.close();
+			close();
 		}
 		return preguntas;
 	}
 
+	/**
+	 * Clase 
+	 * @param c Cursor que va a ser mapeado en objetos Pregunta. Este método confia en que el cursor 
+	 * esta ordenado en primer lugar por el id de la pregunta
+	 * @return List <Pregunta>
+	 */
 	private List<Pregunta> getObjectsFromCursor(Cursor c){
 		if(c == null) 
 			return null;
@@ -72,24 +76,19 @@ public class JohnDB {
 		Respuesta respuesta = null;
 		while(c.moveToNext()){
 			int preguntaKey = c.getInt(c.getColumnIndex("PID"));
-			if(preguntaKeyAux == preguntaKey){
-				respuesta = new Respuesta();
-				respuesta.setId(c.getInt(c.getColumnIndex("PID")));
-				respuesta.setTextoRespuesta(c.getString(c.getColumnIndex("TEXTORESPUESTA")));
-				respuesta.setCorrecta(c.getInt(c.getColumnIndex("CORRECTAYN")) == 1 ? true : false);
-				pregunta.addRespuesta(respuesta);
-			}else{
+			if(preguntaKeyAux != preguntaKey){
 				preguntaKeyAux = preguntaKey;
 				pregunta = new Pregunta();
 				respuesta = new Respuesta();
 				pregunta.setId(preguntaKey);
 				pregunta.setTextoPregunta(c.getString(c.getColumnIndex("TEXTOPREGUNTA")));
 				preguntas.add(pregunta);
-				respuesta.setId(c.getInt(c.getColumnIndex("PID")));
-				respuesta.setTextoRespuesta(c.getString(c.getColumnIndex("TEXTORESPUESTA")));
-				respuesta.setCorrecta(c.getInt(c.getColumnIndex("CORRECTAYN")) == 1 ? true : false);
-				pregunta.addRespuesta(respuesta);
 			}
+			respuesta = new Respuesta();
+			respuesta.setId(c.getInt(c.getColumnIndex("RID")));
+			respuesta.setTextoRespuesta(c.getString(c.getColumnIndex("TEXTORESPUESTA")));
+			respuesta.setCorrecta(c.getInt(c.getColumnIndex("CORRECTAYN")) == 1 ? true : false);
+			pregunta.addRespuesta(respuesta);
 		}
 		return preguntas;
 	}
