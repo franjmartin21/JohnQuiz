@@ -52,6 +52,7 @@ public class JohnDB {
 		List <Pregunta> preguntas= null;
 		Cursor c = null;
 		try{
+			db=dbHelper.getReadableDatabase();
 			c = db.rawQuery(SELECT_ALL, null);
 			preguntas = getObjectsFromCursor(c);
 		} finally{

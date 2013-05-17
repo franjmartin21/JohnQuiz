@@ -21,7 +21,6 @@ import com.johnandroid.quiz.domain.Pregunta;
  *
  */
 public class JohnQuizServiceImpl implements JohnQuizService{
-	private int RANDOM_NUMAUX=0;
 	
 	private JohnDB johnDB;
 	private List<Pregunta> preguntas;
@@ -53,7 +52,7 @@ public class JohnQuizServiceImpl implements JohnQuizService{
 	 * @return
 	 */
 	private int getRandomId(int maxNumber){
-		return RANDOM_NUMAUX++;
+		return (int)Math.floor((Math.random() * maxNumber));
 	}
 
 }
